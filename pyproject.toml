@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=77,<83", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "coach-emotion-analysis"
+version = "0.1.0"
+description = "Research pipeline for temporal speech emotion analysis with neural models and Portuguese football rules"
+readme = "README.md"
+requires-python = ">=3.11,<3.14"
+dependencies = ["numpy>=1.26,<3", "pandas>=2.2,<3", "scikit-learn>=1.5,<2", "scipy>=1.13,<2"]
+
+[project.optional-dependencies]
+inference = ["torch>=2.6,<2.8", "transformers==4.57.0", "librosa>=0.10,<0.12", "faster-whisper==1.2.0", "ctranslate2>=4.4,<5"]
+dev = ["pytest>=8,<10", "ruff>=0.11,<1", "build>=1.2,<2"]
+
+[project.scripts]
+coach-emotion = "coach_emotion.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests/unit"]
+addopts = "-ra"
+markers = ["integration: optional dependencies; no model downloads", "e2e: explicit opt-in model inference"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]
