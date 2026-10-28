@@ -36,7 +36,7 @@ _BACKENDS_LOADED = False
 
 def _ensure_backends():
     """Import model libraries only when inference is actually requested."""
-    global librosa, wavfile, resample, torch, ctranslate2, pipeline
+    global librosa, wavfile, resample, torch, ctranslate2
     global WhisperModel, BatchedInferencePipeline, _BACKENDS_LOADED
     if _BACKENDS_LOADED:
         return
@@ -57,10 +57,6 @@ def _ensure_backends():
         import ctranslate2 as ct_lib
 
         ctranslate2 = ct_lib
-    if TRANSFORMERS_AVAILABLE:
-        from transformers import pipeline as hf_pipeline
-
-        pipeline = hf_pipeline
     if FASTER_WHISPER_AVAILABLE:
         from faster_whisper import BatchedInferencePipeline as fw_batch
         from faster_whisper import WhisperModel as fw_model
@@ -414,6 +410,7 @@ def carregar_stt_faster_whisper(
 
 def carregar_stt_transformers(model_id: str) -> STTRuntime:
     """Carrega Whisper via pipeline do transformers."""
+    global pipeline
     _ensure_backends()
     if not TRANSFORMERS_AVAILABLE:
         raise RuntimeError(
@@ -421,6 +418,10 @@ def carregar_stt_transformers(model_id: str) -> STTRuntime:
         )
     if not TORCH_AVAILABLE:
         raise RuntimeError("Backend transformers requer torch. Instale com: pip install torch")
+    if pipeline is None:
+        from transformers import pipeline as hf_pipeline
+
+        pipeline = hf_pipeline
 
     device_id, dtype = detectar_dispositivo_torch()
     stt_kwargs: Dict[str, Any] = {"device": device_id}

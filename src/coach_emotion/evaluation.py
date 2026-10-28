@@ -4,7 +4,7 @@ import csv
 import unicodedata
 from collections import defaultdict
 from dataclasses import dataclass
-from math import sqrt
+from math import isfinite, sqrt
 from pathlib import Path
 from statistics import mean
 from typing import Any, Dict, List, Literal, Mapping, Optional, Sequence, Tuple
@@ -580,7 +580,13 @@ class AvaliadorAcuracia:
     def _converter_codigo_emocao(self, valor: Any) -> int:
         if pd.isna(valor) or str(valor).strip() == "":
             return 0
-        return int(float(valor))
+        numero = float(valor)
+        if not isfinite(numero) or not numero.is_integer():
+            raise ValueError("Ground-truth emotion code must be a finite integer")
+        codigo = int(numero)
+        if codigo not in self.mapa_codigos_humanos:
+            raise ValueError(f"Invalid ground-truth emotion code: {codigo}")
+        return codigo
 
     def _converter_metrica_humana(self, valor: Any) -> Optional[float]:
         if pd.isna(valor) or str(valor).strip() == "":
