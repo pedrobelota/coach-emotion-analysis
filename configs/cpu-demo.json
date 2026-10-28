@@ -1,0 +1,8 @@
+{
+  "stt_model": "openai/whisper-tiny",
+  "backend": "faster-whisper",
+  "device": "cpu",
+  "language": "pt",
+  "compute_type_cpu": "int8",
+  "batch_size_cpu": 1
+}
