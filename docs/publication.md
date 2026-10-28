@@ -15,6 +15,8 @@ The original research folder is left in place and is not edited, renamed or move
 the migration. The curated copy has an independent Git root and does not use an
 ancestor Git repository. The original inventory contains 127 files. Local preservation
 snapshots and private verification logs are kept outside the published repository.
+The public commits use the contributor's GitHub `noreply` address rather than a
+personal email. This identity setting is local to the curated repository.
 
 `scripts/audit_release.py` checks candidate and tracked files for excluded types,
 large files, personal paths and common secret signatures. This limited check

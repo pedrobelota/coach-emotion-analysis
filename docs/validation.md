@@ -65,6 +65,12 @@ float16. The run processed **14 windows with zero SER failures** and produced si
 five-second intervals. It wrote `predictions.tsv`, `details.tsv`, `windows.json`,
 `console.log` and an environment/timing `summary.json`, all outside version control.
 
+A second run with **`--device cpu --offline` completed in 82.78 seconds**, using
+Whisper CPU int8 and SER CPU float32. It also produced 14 windows, zero SER failures
+and six final intervals. The files were already cached by the first run. These two
+wall times are not a controlled GPU-versus-CPU comparison and must not be used to
+claim a speedup. They verify both the automatic-fallback path and fully CPU execution.
+
 This run is a functional check, not a latency benchmark or an accuracy evaluation.
 Dependency imports and checkpoint reads were slow on the local machine; an earlier
 attempt was interrupted during loading. The VAD retained only about 0.83 seconds of
