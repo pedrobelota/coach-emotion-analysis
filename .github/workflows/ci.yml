@@ -73,6 +73,6 @@ jobs:
         run: |
           docker run -d --name demo -p 127.0.0.1:7860:7860 coach-emotion-demo
           trap 'docker logs demo; docker stop demo' EXIT
-          curl --fail --retry 15 --retry-delay 2 --retry-connrefused http://127.0.0.1:7860/api/health
+          curl --fail --retry 15 --retry-delay 2 --retry-all-errors --retry-max-time 60 --max-time 10 http://127.0.0.1:7860/api/health
           curl --fail http://127.0.0.1:7860/static/app.js --output /dev/null
           curl --fail http://127.0.0.1:7860/api/example

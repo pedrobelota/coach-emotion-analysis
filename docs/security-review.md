@@ -72,6 +72,11 @@ also processed ten seconds of generated silence in 33.5 seconds and returned two
 intervals. These checks establish execution, not classification quality or a latency
 benchmark. Timings are not comparable across different inputs or cache states.
 
+A subsequent HTTP request with the authorized 30-second recording completed in
+27.0 seconds with six final intervals using Whisper tiny and warmed local caches.
+Automated browser interaction was unavailable in the local environment; the HTTP
+boundary and real model execution were checked directly, not claimed as visual QA.
+
 ## What still matters for an AI Engineer portfolio
 
 The historical collapsed macro F1 remains **0.172**. The all-neutral baseline's
