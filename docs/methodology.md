@@ -31,8 +31,16 @@ invalid/nonintegral codes are errors. Every labeled human interval must overlap 
 least one prediction; otherwise evaluation fails instead of silently selecting only
 covered intervals. If multiple nonoverlapping prediction rows intersect an annotation,
 each receives one vote; votes are not weighted by overlap duration. Matching
-five-second boundaries are preferred. Any positive overlap counts as coverage, so
-users must check complete time coverage themselves when intervals differ.
+five-second boundaries are preferred. The full duration of each labeled interval must
+be covered, including its start/end and internal gaps. An overlap of a few milliseconds
+cannot count as coverage for a five-second annotation. Duplicate, overlapping and
+out-of-order ground-truth intervals are rejected.
+
+The public final-code evaluator requires the compact three-column annotation schema;
+legacy four-column labels must use the raw-window evaluator. Its numeric codes and
+text labels can follow a different historical mapping and must not be conflated.
+Reports include per-class precision/recall/F1, a confusion matrix (rows: truth;
+columns: prediction), its explicit class order, and always-neutral baselines.
 
 `coach_emotion.evaluation` and `coach_emotion.evaluate_audio` retain the original
 raw-window evaluator for compatibility. Its report explicitly counts missing

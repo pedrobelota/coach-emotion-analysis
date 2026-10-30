@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Coach Emotion Analysis · Research demo</title><link rel="stylesheet" href="/static/style.css"><script src="/static/app.js" defer></script></head>
+<body>
+<main>
+  <nav><a class="brand" href="/">CEA<span> / RESEARCH LAB</span></a><a href="https://github.com/pedrobelota/coach-emotion-analysis">View source ↗</a></nav>
+  <header><p class="eyebrow">SPEECH · TEMPORAL ANALYSIS · PORTUGUESE</p><h1>From a recording<br>to inspectable evidence.</h1><p class="intro">Explore how transcription, acoustic classification and football-domain rules produce emotion hypotheses over time.</p><div class="tags"><span>Whisper tiny</span><span>Wav2Vec2</span><span>CPU inference</span><span>Research prototype</span></div></header>
+  <aside class="notice"><strong>Hypotheses, not a measure of feelings.</strong> The historical pilot macro F1 was 0.172, and a neutral baseline performed better on accuracy. These outputs must not inform decisions about people. <a href="https://github.com/pedrobelota/coach-emotion-analysis/blob/main/docs/results.md">Read the evidence ↗</a></aside>
+  <section class="workspace">
+    <article class="panel inputs"><p class="eyebrow">01 / INPUT</p><h2>Try a short clip</h2><p>Upload authorized Portuguese speech. This smaller demo configuration differs from the historical experiment.</p>
+      <label class="upload" for="audio"><strong>Choose a WAV recording</strong><span>4–30 seconds · PCM · mono or stereo · up to 8 MiB</span><input id="audio" type="file" accept=".wav,audio/wav"></label>
+      <label class="consent"><input type="checkbox" id="consent"><span>I am authorized to process this recording and have read the upload notice.</span></label>
+      <button id="analyze" class="primary">Analyze audio <span>→</span></button>
+      <p class="privacy">On a hosted demo, the WAV is sent to that server. Request files are removed after processing; this app does not export transcripts or persist analysis results. The hosting provider has separate policies. Use non-sensitive clips.</p>
+      <div class="sample"><h3>Just exploring?</h3><p>Open four invented intervals without uploading or running a model.</p><button id="example" class="secondary">Load synthetic example</button></div>
+    </article>
+    <article class="panel outputs"><div class="output-head"><div><p class="eyebrow">02 / OUTPUT</p><h2>Temporal hypotheses</h2></div><span id="mode" class="mode">No analysis yet</span></div><p id="status" role="status" aria-live="polite">Your results will appear here. First inference downloads model files and can take several minutes.</p><div id="timeline" class="timeline" aria-label="Predicted temporal intervals"></div><div class="table-wrap"><table><thead><tr><th scope="col">Start</th><th scope="col">End</th><th scope="col">Code</th><th scope="col">Research label</th></tr></thead><tbody id="rows"><tr><td colspan="4" class="empty">Upload a clip or explore the synthetic example.</td></tr></tbody></table></div><p class="legend">Codes 0 / 1: neutral without / with rule-detected intervention.<br>2 joy · 3 surprise · 4 anger · 5 sadness · 6 fear.</p></article>
+  </section>
+  <footer><span>Local models. Explicit limitations. Inspectable outputs.</span><div><a href="https://github.com/pedrobelota/coach-emotion-analysis/blob/main/MODEL_CARD.md">Model card</a><a href="https://github.com/pedrobelota/coach-emotion-analysis/blob/main/DATA_CARD.md">Data card</a><a href="https://github.com/pedrobelota/coach-emotion-analysis/blob/main/docs/huggingface.md">Reproduce this demo</a></div></footer>
+</main>
+</body></html>

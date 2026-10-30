@@ -1,24 +1,35 @@
 [build-system]
-requires = ["setuptools>=77,<83", "wheel"]
+requires = ["setuptools>=84.2.1,<85", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "coach-emotion-analysis"
-version = "0.1.0"
+version = "0.2.0"
 description = "Research pipeline for temporal speech emotion analysis with neural models and Portuguese football rules"
 readme = "README.md"
 requires-python = ">=3.11,<3.14"
 dependencies = ["numpy>=1.26,<3", "pandas>=2.2,<3", "scikit-learn>=1.5,<2", "scipy>=1.13,<2"]
 
+[project.urls]
+Repository = "https://github.com/pedrobelota/coach-emotion-analysis"
+Documentation = "https://github.com/pedrobelota/coach-emotion-analysis#readme"
+Issues = "https://github.com/pedrobelota/coach-emotion-analysis/issues"
+
 [project.optional-dependencies]
-inference = ["torch>=2.6,<2.8", "transformers==4.57.0", "librosa>=0.10,<0.12", "faster-whisper==1.2.0", "ctranslate2>=4.4,<5"]
+inference = ["torch==2.15.0", "transformers==5.22.0", "librosa>=0.11,<0.12", "faster-whisper==1.2.1", "ctranslate2==4.8.4", "setuptools>=84.2.1,<85"]
+demo = ["fastapi==0.162.0", "uvicorn==0.54.0"]
+demo-test = ["httpx>=0.28,<0.29"]
 dev = ["pytest>=8,<10", "ruff>=0.11,<1", "build>=1.2,<2"]
 
 [project.scripts]
 coach-emotion = "coach_emotion.cli:main"
+coach-emotion-demo = "coach_emotion.server:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+coach_emotion = ["static/*.html", "static/*.css", "static/*.js"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests/unit"]

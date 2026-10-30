@@ -98,3 +98,7 @@ paths, unexpectedly large files and common secret signatures before publication.
 This is a bounded hygiene audit, not a formal privacy or security certification.
 
 Historical accuracy figures remain documented separately in [results](results.md).
+
+The subsequent release 0.2 audit and dependency/demo work are documented separately
+in [security and quality review](security-review.md). The timings and dependency
+versions above remain historical records of the initial migration.

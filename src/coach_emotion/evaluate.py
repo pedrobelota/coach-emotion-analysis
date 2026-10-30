@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence
 
 import pandas as pd
-from sklearn.metrics import precision_recall_fscore_support
+from sklearn.metrics import confusion_matrix, precision_recall_fscore_support
 
 from coach_emotion.dataset import EMOCAO_FINAL_POR_CODIGO, ROTULOS_MODELO_0_A_6
 from coach_emotion.evaluation import AvaliadorAcuracia, ConfigAvaliacao
@@ -38,6 +38,11 @@ class ResultadoAvaliacaoFinal:
     suporte_por_codigo_real: Dict[int, int]
     suporte_por_codigo_predito: Dict[int, int]
     observacao_validade: str
+    baseline_codigo_0: float
+    baseline_neutro_colapsado: float
+    classes_colapsadas: List[str]
+    matriz_confusao_colapsada: List[List[int]]
+    metricas_por_classe_colapsada: Dict[str, Dict[str, float | int]]
 
 
 def _ha_sobreposicao(inicio_a: float, fim_a: float, inicio_b: float, fim_b: float) -> bool:
@@ -102,6 +107,11 @@ def avaliar_dataset_final(
         config=ConfigAvaliacao(politica_nulos="ignore"),
     )
     ground_truth = avaliador.carregar_ground_truth()
+    if any(item.permite_mapear_nulo_para_neutro for item in ground_truth):
+        raise ValueError(
+            "Final-code evaluation requires the compact three-column ground truth; "
+            "legacy four-column annotations use the separate raw-window evaluator"
+        )
     predicoes = _ler_dataset_final(caminho_dataset_final)
 
     reais: List[int] = []
@@ -109,8 +119,8 @@ def avaliar_dataset_final(
     for intervalo in ground_truth:
         if intervalo.rotulo_sistema is None:
             continue
-        candidatas = [
-            predicao.codigo_emocao
+        sobrepostas = [
+            predicao
             for predicao in predicoes
             if _ha_sobreposicao(
                 intervalo.inicio_s,
@@ -119,13 +129,23 @@ def avaliar_dataset_final(
                 predicao.fim_s,
             )
         ]
-        if not candidatas:
+        if not sobrepostas:
             raise ValueError(
                 f"No prediction overlaps labeled interval {intervalo.inicio_s}-{intervalo.fim_s}; "
                 "evaluation refuses to silently exclude missing predictions"
             )
+        cobertura = sum(
+            min(intervalo.fim_s, item.fim_s) - max(intervalo.inicio_s, item.inicio_s)
+            for item in sobrepostas
+        )
+        duracao = intervalo.fim_s - intervalo.inicio_s
+        if cobertura < duracao - 1e-7:
+            raise ValueError(
+                f"Incomplete prediction coverage for labeled interval "
+                f"{intervalo.inicio_s}-{intervalo.fim_s}: {cobertura:.6f}/{duracao:.6f} seconds"
+            )
         reais.append(intervalo.codigo_emocao)
-        preditos.append(_voto_majoritario(candidatas))
+        preditos.append(_voto_majoritario(item.codigo_emocao for item in sobrepostas))
 
     if not reais:
         raise ValueError("Nao ha intervalos rotulados com predicao sobreposta")
@@ -144,6 +164,9 @@ def avaliar_dataset_final(
         average="macro",
         zero_division=0,
     )
+    por_classe = precision_recall_fscore_support(
+        reais_colapsados, preditos_colapsados, labels=classes, average=None, zero_division=0
+    )
     return ResultadoAvaliacaoFinal(
         total_intervalos=len(reais),
         acertos_exatos_0a6=acertos_exatos,
@@ -160,6 +183,23 @@ def avaliar_dataset_final(
             "As metricas descrevem este unico recorte anotado. Elas nao devem ser "
             "interpretadas como estimativa de generalizacao sem conjunto de teste independente."
         ),
+        baseline_codigo_0=sum(real == 0 for real in reais) / len(reais),
+        baseline_neutro_colapsado=sum(real in (0, 1) for real in reais) / len(reais),
+        classes_colapsadas=classes,
+        matriz_confusao_colapsada=(
+            [[len(reais)]]
+            if len(classes) == 1
+            else confusion_matrix(reais_colapsados, preditos_colapsados, labels=classes).tolist()
+        ),
+        metricas_por_classe_colapsada={
+            classe: {
+                "precision": float(por_classe[0][i]),
+                "recall": float(por_classe[1][i]),
+                "f1": float(por_classe[2][i]),
+                "support": int(por_classe[3][i]),
+            }
+            for i, classe in enumerate(classes)
+        },
     )
 
 

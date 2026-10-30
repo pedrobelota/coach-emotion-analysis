@@ -1,6 +1,7 @@
 # Coach Emotion Analysis
 
 [![CI](https://github.com/pedrobelota/coach-emotion-analysis/actions/workflows/ci.yml/badge.svg)](https://github.com/pedrobelota/coach-emotion-analysis/actions/workflows/ci.yml)
+[![Security](https://github.com/pedrobelota/coach-emotion-analysis/actions/workflows/security.yml/badge.svg)](https://github.com/pedrobelota/coach-emotion-analysis/actions/workflows/security.yml)
 
 A research pipeline that turns local audio or video into a time-indexed table of
 emotion hypotheses. It combines **Whisper transcription**, **Wav2Vec2 acoustic
@@ -19,6 +20,7 @@ measurements of a person's internal emotional state.
 - Separate analysis and evaluation commands; inference requires no ground truth.
 - Unit tests without PyTorch or model downloads, optional integration tests, and CI.
 - Honest reporting of imbalance, experimental scope and remaining uncertainty.
+- A bounded audio-upload API and browser demo, packaged for a Hugging Face Docker Space.
 
 This repository integrates existing checkpoints; it does not claim a newly trained
 foundation model or a new fine-tuned checkpoint.
@@ -65,8 +67,8 @@ examples. It does **not** install the neural inference stack.
 
 For audio analysis, install [FFmpeg](https://ffmpeg.org/download.html), verify that
 `ffmpeg -version` works, then install PyTorch for your hardware using its
-[official selector](https://pytorch.org/get-started/locally/). This release supports
-PyTorch 2.6–2.7. Add the inference dependencies:
+[official selector](https://pytorch.org/get-started/locally/). Release 0.2 uses
+PyTorch 2.15.0 and Transformers 5.22.0. Add the inference dependencies:
 
 ```bash
 python -m pip install -e ".[inference]"
@@ -75,15 +77,16 @@ python -m pip install -e ".[inference]"
 CPU-only PyTorch can be installed separately, for example:
 
 ```bash
-python -m pip install "torch>=2.6,<2.8" --index-url https://download.pytorch.org/whl/cpu
+python -m pip install --upgrade pip==26.2.2 setuptools==84.2.1
+python -m pip install torch==2.15.0 --index-url https://download.pytorch.org/whl/cpu
 python -m pip install -e ".[inference]"
 ```
 
 GPU users must match their PyTorch build, driver and the native libraries required by
 [CTranslate2/faster-whisper](https://github.com/SYSTRAN/faster-whisper#gpu).
 PyTorch reporting CUDA support does not prove that faster-whisper can load its CUDA
-libraries. The tested machine used torch 2.7.1+cu118; that local build is not imposed
-on other machines. Model downloads happen on first inference and can consume several
+libraries. The current validation uses the CPU build; the older CUDA environment is
+documented only as historical evidence. Model downloads happen on first inference and can consume several
 GB of disk and RAM. No API key or paid model API is required.
 
 See [reproducibility](docs/reproducibility.md) for tested dependencies and the limits
@@ -97,6 +100,29 @@ coach-emotion evaluate --predictions examples/synthetic_predictions.csv --ground
 
 These are four invented intervals with deliberate mistakes: exact accuracy is 50%,
 and collapsed-neutral accuracy is 75%. They demonstrate the interface only.
+
+## Interactive audio demo
+
+After installing FFmpeg and the inference dependencies:
+
+```bash
+python -m pip install -e ".[inference,demo]"
+coach-emotion-demo
+```
+
+Open **http://127.0.0.1:7860**. Use an authorized PCM WAV recording, 4–30 seconds and
+at most 8 MiB. The demo uses Whisper tiny and CPU SER; its predictions are not
+equivalent to the archived experiment. The synthetic example needs no model download.
+First inference downloads public model files. A request has a five-minute inference
+limit; a cold machine may need a retry once downloads finish.
+
+The API processes one recording at a time, queues at most three others, and removes
+temporary uploads and outputs after each request. It returns labels, not transcripts.
+A hosted instance receives the recording on its server; use non-sensitive clips.
+This is a research demo with resource limits, not an authenticated production service.
+
+See [Hugging Face deployment](docs/huggingface.md) for the allowlisted export and
+Docker Space instructions. No hosted demo URL is claimed until deployment succeeds.
 
 ## Analyze your own recording
 
@@ -150,8 +176,10 @@ coach-emotion evaluate --predictions outputs/predictions.tsv --ground-truth data
 
 Annotation schema and synthetic examples are in [examples/README.md](examples/README.md).
 The evaluator distinguishes exact 0–6 accuracy from collapsed-neutral metrics.
-It rejects missing overlapping predictions, invalid codes and overlapping final
-prediction intervals. The raw-window research evaluator is retained separately in
+It requires complete prediction coverage of every labeled interval and rejects
+invalid codes, overlapping predictions, duplicate/overlapping annotations and legacy
+four-column annotations. It reports neutral baselines, per-class metrics and a
+confusion matrix. The raw-window research evaluator is retained separately in
 `coach_emotion.evaluate_audio`; it has a different output contract.
 
 ## Historical pilot results
@@ -190,7 +218,9 @@ python -m build
 The default test suite uses synthetic fixtures and stubbed model calls. Integration
 tests exercise real FFmpeg and a tiny randomly initialized compatibility model;
 they never download pretrained weights. Missing optional dependencies are reported
-as skips. The [CI workflow](.github/workflows/ci.yml) runs on Linux and Windows.
+as skips. API boundary tests additionally need `.[demo,demo-test]`. The
+[CI workflow](.github/workflows/ci.yml) runs on Linux and Windows, and the
+[security workflow](.github/workflows/security.yml) scans Git history and dependencies.
 
 For real local models, explicitly run:
 
@@ -230,6 +260,12 @@ Expand annotated recordings, split by recording/speaker before tuning, compare w
 simple baselines, audit annotation agreement, and evaluate the contribution of text,
 audio and rules independently. Only then consider Portuguese SER adaptation and
 packaging a validated service.
+
+For an AI Engineer portfolio, the strongest next evidence is a reproducible
+baseline/ablation study with held-out recordings, followed by measured latency and
+error analysis. A future LLM report generator should cite timestamps and be tested
+for unsupported claims. This release does not implement LLM reasoning, RAG, agents
+or fine-tuning; those should not be claimed on a resume.
 
 ## Upstream attribution
 

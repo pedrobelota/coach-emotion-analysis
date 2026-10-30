@@ -56,7 +56,7 @@ class Wav2Vec2ParaClassificacaoLegada(Wav2Vec2PreTrainedModel):
         return_dict: Optional[bool] = None,
         **_: Any,
     ) -> SequenceClassifierOutput | Tuple[torch.Tensor, ...]:
-        usar_retorno_dict = return_dict if return_dict is not None else self.config.use_return_dict
+        usar_retorno_dict = return_dict if return_dict is not None else self.config.return_dict
         outputs = self.wav2vec2(
             input_values,
             attention_mask=attention_mask,

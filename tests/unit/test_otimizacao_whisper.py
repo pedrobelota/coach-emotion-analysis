@@ -291,7 +291,9 @@ class TesteOtimizacaoWhisper(unittest.TestCase):
             supports_batch_size=True,
         )
 
-        resultado = transcrever_com_stt(runtime, Path("audio.wav"))
+        with patch("coach_emotion.pipeline.carregar_audio_mono", return_value=([0.0], 16000)):
+            resultado = transcrever_com_stt(runtime, Path("audio.wav"))
+        self.assertEqual(modelo.transcribe.call_args.args[0], [0.0])
 
         kwargs = modelo.transcribe.call_args.kwargs
         self.assertEqual(kwargs["beam_size"], 1)

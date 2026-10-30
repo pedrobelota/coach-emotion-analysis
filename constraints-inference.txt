@@ -1,11 +1,12 @@
-# Reference versions from the verified Windows/Python 3.13 inference environment.
-# Choose the appropriate CPU/CUDA torch index separately. No private pip freeze.
-numpy==2.3.3
-pandas==2.3.2
-scipy==1.16.2
-scikit-learn==1.7.2
-torch==2.7.1
-transformers==4.57.0
-faster-whisper==1.2.0
-ctranslate2==4.6.0
+# Direct-dependency reference for release 0.2, Windows/Python 3.13 CPU.
+# Select the CPU/CUDA torch index separately. Not a full transitive lock file.
+numpy==2.5.4
+pandas==2.3.3
+scipy==1.18.1
+scikit-learn==1.9.1
+torch==2.15.0
+transformers==5.22.0
+faster-whisper==1.2.1
+ctranslate2==4.8.4
 librosa==0.11.0
+setuptools==84.2.1

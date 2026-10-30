@@ -8,7 +8,7 @@ recordings and human labels are intentionally withheld. Historical model aliases
 hardware and native libraries can also affect exact numerical outputs.
 
 Use Python 3.11–3.13. `pyproject.toml` separates lightweight evaluation/development
-dependencies from the inference extra. Transformers 4.57.0 and faster-whisper 1.2.0
+dependencies from the inference extra. Transformers 5.22.0 and faster-whisper 1.2.1
 are pinned to the verified interfaces; the SER revision is pinned in `runtime.py`.
 Core ranges allow supported Python versions. They are not a universal lock file.
 
@@ -53,5 +53,7 @@ local caches for the selected Whisper and SER revisions.
 
 GPU/CPU outputs can differ. Model aliases can resolve to newer snapshots. Fine-grained
 timing in the Transformers fallback is approximate. Softmax confidence is not calibrated.
-This project does not include a production API, hosted demo, container or trained
-weights. Those are future work rather than prerequisites for the research-code release.
+This project includes a bounded demo API and a Docker Space recipe, but no production
+service or newly trained weights. Hosting requires a separate deployment; see
+[Hugging Face](huggingface.md). The current CPU environment and regression results
+are documented in the [security and quality review](security-review.md).

@@ -172,8 +172,8 @@ class ConfigAvaliacao:
             raise ValueError("estrategia_classe suportada atualmente: 'majority_vote'")
         if self.estrategia_escore != "mean":
             raise ValueError("estrategia_escore suportada atualmente: 'mean'")
-        if self.duracao_intervalo_padrao_s <= 0:
-            raise ValueError("duracao_intervalo_padrao_s deve ser positiva")
+        if not isfinite(self.duracao_intervalo_padrao_s) or self.duracao_intervalo_padrao_s <= 0:
+            raise ValueError("duracao_intervalo_padrao_s deve ser finita e positiva")
 
         self.rotulo_neutro_padrao = _mapear_para_rotulo_sistema(self.rotulo_neutro_padrao)
 
@@ -269,12 +269,17 @@ class AvaliadorAcuracia:
         intervalos: List[IntervaloGroundTruth] = []
         fim_anterior = 0.0
         for indice, linha in dataframe.iterrows():
-            intervalo_bruto = str(linha["intervalo"]).strip()
+            valor_intervalo = linha["intervalo"]
+            intervalo_bruto = "" if pd.isna(valor_intervalo) else str(valor_intervalo).strip()
             inicio_s, fim_s = self._resolver_intervalo(
                 intervalo_bruto=intervalo_bruto,
                 indice=int(indice),
                 fim_anterior=fim_anterior,
             )
+            if inicio_s < fim_anterior:
+                raise ValueError(
+                    "Ground-truth intervals must be chronological and must not overlap"
+                )
             fim_anterior = fim_s
 
             codigo_emocao = self._converter_codigo_emocao(linha.get("codigo_emocao"))

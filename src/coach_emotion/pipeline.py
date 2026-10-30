@@ -600,8 +600,11 @@ def transcrever_com_stt(stt: STTRuntime, caminho: Path) -> TranscricaoResultado:
         if stt.supports_batch_size:
             kwargs_transcricao["batch_size"] = stt.batch_size
 
+        # The CLI already normalizes audio with FFmpeg. Passing the waveform also
+        # avoids PyAV's version-dependent metadata_errors argument in older runtimes.
+        audio, _ = carregar_audio_mono(caminho, TAXA_DE_AMOSTRAGEM)
         segmentos, info = stt.model.transcribe(
-            str(caminho),
+            audio,
             **kwargs_transcricao,
         )
         texto_completo, chunks = converter_segmentos_faster_whisper_em_chunks(segmentos)
@@ -1146,7 +1149,9 @@ def main(
         perc = 100 * count / len(categorias)
         logger.info(f"  {cat}: {count} ({perc:.1f}%)")
 
-    logger.info("Raw scores are heuristic signals; see the calibrated output and limitations.")
+    logger.info(
+        "Raw scores and the final aggregation are heuristic signals, not calibrated probabilities."
+    )
 
     # Alerta de janelas falhadas
     if janelas_falhadas > 0:

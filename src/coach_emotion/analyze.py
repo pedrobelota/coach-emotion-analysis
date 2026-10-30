@@ -218,7 +218,7 @@ def criar_parser() -> argparse.ArgumentParser:
         default=None,
         help=(
             "Opcional: pesos por classe no formato 2:1.35,3:1.35,4:1.30,"
-            "5:1.35,6:1.20. Pesos nao informados mantem o padrao calibrado."
+            "5:1.35,6:1.20. Pesos nao informados mantem os valores heuristicos de pesquisa."
         ),
     )
     parser.add_argument(

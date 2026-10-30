@@ -2,7 +2,7 @@
 
 ## Identity
 
-Coach Emotion Analysis 0.1.0 is a research inference system assembled from pretrained
+Coach Emotion Analysis 0.2.0 is a research inference system assembled from pretrained
 models and hand-authored domain rules. It is not a newly trained model. The public
 release distributes code only.
 
@@ -20,6 +20,9 @@ used during the verified local runs. The adapter checks for missing, unexpected 
 mismatched checkpoint weights; loading an untrained replacement head is an error.
 Whisper model aliases are not immutable revisions; record the resolved snapshot when
 conducting a new experiment. Upstream architecture and model terms remain applicable.
+
+The browser demo substitutes Whisper tiny for the research ASR model and runs on
+CPU. No evaluation result from the historical pilot is attributed to that configuration.
 
 ## Language and domain
 
