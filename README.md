@@ -102,6 +102,12 @@ of reproducing the private pilot experiment.
 
 ## Quickstart without models
 
+The four invented schema examples are also available on
+[Hugging Face](https://huggingface.co/datasets/phbg/coach-emotion-synthetic-schema).
+They are software fixtures, not the private research corpus or a model benchmark.
+The [portfolio collection](https://huggingface.co/collections/phbg/devtitans-and-pibic-ai-engineering-6ae553217b5be2d991b7e904)
+links the curated datasets and attributes the upstream model checkpoints.
+
 ```bash
 coach-emotion evaluate --predictions examples/synthetic_predictions.csv --ground-truth examples/synthetic_ground_truth.tsv
 ```
