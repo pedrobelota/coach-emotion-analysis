@@ -8,6 +8,14 @@ emotion hypotheses. It combines **Whisper transcription**, **Wav2Vec2 acoustic
 classification**, and **Portuguese football-domain rules** developed in a PIBIC
 undergraduate research project.
 
+**Technical review:** [evidence and authorship](docs/portfolio-evidence.md) ·
+[model card](MODEL_CARD.md) · [evaluation results](docs/results.md) ·
+[interactive demo setup](docs/huggingface.md).
+
+Companion project: [Android Smart Notifications](https://github.com/pedrobelota/android-smart-notifications)
+demonstrates on-device LLM generation with Gemma and LiteRT-LM. This project focuses
+on audio-model integration, research evaluation and reproducible software delivery.
+
 The engineering pipeline runs end to end. Its pilot classification results are
 limited, particularly for minority emotions. These outputs are not reliable
 measurements of a person's internal emotional state.
