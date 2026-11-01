@@ -1,5 +1,28 @@
 # Coach Emotion Analysis
 
+**PIBIC · Engenharia de IA aplicada a áudio · Pesquisa reproduzível**
+
+Pipeline que transforma áudio ou vídeo em hipóteses de emoção organizadas no tempo,
+com transcrição Whisper, classificação acústica Wav2Vec2 e regras do domínio de futebol.
+A contribuição está na integração dos modelos, no processamento temporal, na avaliação
+e na entrega de software. O pipeline funciona de ponta a ponta; a qualidade da
+classificação permanece limitada no estudo piloto.
+
+| Para explorar | Onde começar |
+| --- | --- |
+| Método e contribuição | [Metodologia](docs/methodology.md) · [autoria e evidências](docs/portfolio-evidence.md) |
+| Experimentar | [Demo local de áudio](#interactive-audio-demo) · [CLI](#analyze-your-own-recording) |
+| Avaliar resultados | [Métricas, baseline e limitações](docs/results.md) |
+| Verificar engenharia | [CI Linux/Windows](https://github.com/pedrobelota/coach-emotion-analysis/actions/workflows/ci.yml) · [testes](#tests) |
+| Dados públicos | [Exemplos sintéticos de formato no Hugging Face](https://huggingface.co/datasets/phbg/coach-emotion-synthetic-schema); corpus de pesquisa privado |
+
+**Stack:** Python · PyTorch · Transformers · Whisper · Wav2Vec2 · FastAPI · Docker · GitHub Actions.
+
+Documentação técnica em inglês abaixo. Para IA generativa on-device, veja o projeto
+complementar [Smart Notifications / DevTitans](https://github.com/pedrobelota/android-smart-notifications).
+
+---
+
 [![CI](https://github.com/pedrobelota/coach-emotion-analysis/actions/workflows/ci.yml/badge.svg)](https://github.com/pedrobelota/coach-emotion-analysis/actions/workflows/ci.yml)
 [![Security](https://github.com/pedrobelota/coach-emotion-analysis/actions/workflows/security.yml/badge.svg)](https://github.com/pedrobelota/coach-emotion-analysis/actions/workflows/security.yml)
 
